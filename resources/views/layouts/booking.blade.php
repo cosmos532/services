@@ -46,13 +46,13 @@
       function changePrice()
 
       {
-        var combo = document.getElementById('service_id');
-        var option = combo.value;
+        var option = $("#service_id :selected").attr("data-price");
         
-        document.getElementById('price').value = datos[option -1];
+        document.getElementById('price').value = option;
         
       }
     </script>
+
 
     <script>
 
@@ -62,32 +62,12 @@
 
         $.ajax({
           type: "post",
-          url: "{{ route('prices') }}",
-          data: {"_token": "{{ csrf_token() }}"},
-          success: function(data) {
-            datos = $.parseJSON(data);
-            console.log(datos); 
-          },
-          error: function (error) { 
-            console.log(error); 
-          }
-                                   
-        });  
-        
-      });                                  
-    </script>
-
-    <script>
-      $(document).ready(function(){
-
-        $.ajax({
-          type: "post",
           url: "{{ route('select') }}",
           data: {"_token": "{{ csrf_token() }}"},
           success: function(data) {
             datos = $.parseJSON(data);
             for(var i = 0; i < datos.length; i++) {
-                $('#service_id').append('<option value = \"' + datos[i].value + '\">' + datos[i].description + '</option>');
+                $('#service_id').append('<option value = \"' + datos[i].value + '\" data-price = \"' + datos[i].price + '\">' + datos[i].description + '</option>');
             }
           },
           error: function (error) { 
@@ -109,16 +89,66 @@
           success: function(data) {
             datos = $.parseJSON(data);
             for(var i = 0; i < datos.length; i++) {
-                $('#service_id').append('<option value = \"' + datos[i].value + '\">' + datos[i].description + '</option>');
+                $('#service_id').append('<option value = \"' + datos[i].value + '\" data-price = \"' + datos[i].price + '\">' + datos[i].description + '</option>');
             }
           },
           error: function (error) { 
             console.log(error); 
           }
                                    
-        });  
+        }); 
         
       });                                  
+    </script>
+
+    <script>
+                   
+      let date;
+      let time;
+      let url = "{{route('check.date')}}";
+
+      $('#datepicker').change(function() {
+          date = $(this).val();
+          if ( $("#time").val()!=="" && $("#datepicker").val() !== "")
+          {
+            call_to_controller(date, time, url);
+          }
+      });
+
+      $('#time').change(function() {
+          time = $(this).val();
+          if ( $("#time").val()!=="" && $("#datepicker").val() !== "")
+          {
+            call_to_controller(date, time, url);
+          }
+      });
+      
+
+      function call_to_controller(date, time, url) {
+
+        $.ajax({
+          type: "post",
+          url: url,
+          data: {"_token": "{{ csrf_token() }}",
+                  date: date, time: time, url: url 
+                },
+          success: function(data) {
+            if (data) 
+            {
+              $("#date-response").html('La fecha está ocupada');
+            } 
+            else 
+            {
+              $("#date-response").html('');
+            }
+          },
+          error: function (error) { 
+            console.log(error); 
+          }
+                                   
+        });            
+      };                         
+
     </script>
 
     @stack('scripts')

@@ -33,19 +33,11 @@ Route::middleware(['auth'])->middleware('verified')->group(function () {
        
         //---BOOKINGS---//
 
-        Route::get('/bookings/search', [App\Http\Controllers\BookingController::class, 'search'])->name('bookings.search');
-
-        Route::get('/bookings/pay', function () {
-            return view('bookings.pay');
-        })->name('bookings.pay');
+        Route::post('/booking/check-date', [App\Http\Controllers\BookingController::class, 'checkDate'])->name('check.date');
 
         Route::post('/booking/select', [App\Http\Controllers\BookingController::class, 'select'])->name('select');
 
         Route::post('/booking/prices', [App\Http\Controllers\BookingController::class, 'prices'])->name('prices');
-
-        Route::post('/booking/check-date', [App\Http\Controllers\BookingController::class, 'checkDate'])->name('check.date');
-
-        Route::post('booking/status', [App\Http\Controllers\BookingController::class, 'status'])->name('booking.status');
 
         Route::get('/booking/{id}/', [App\Http\Controllers\BookingController::class, 'create']);
 

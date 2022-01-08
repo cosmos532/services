@@ -87,7 +87,7 @@ class BookingController extends Controller
             foreach ($services as $service) {
                 if($service->type == 1)
                 {
-                  $elements[] = array('value'=>$service->id,'description'=>$service->description, 'type'=>$service->type);  
+                  $elements[] = array('value'=>$service->id,'description'=>$service->description, 'type'=>$service->type, 'price'=>$service->price);  
                 }
             }
 
@@ -97,7 +97,18 @@ class BookingController extends Controller
 
     public function checkDate(Request $request)
     {
-        //
+        $json = Booking::where('date', '=', $request->date)->where('time', '=', $request->time)->first();
+
+        if ($json == null)
+        {
+            $result = false;
+            return $result;
+        }
+        else
+        {
+            $result = true;
+            return $result;
+        }
     }
 
     public function prices()
@@ -107,7 +118,11 @@ class BookingController extends Controller
         if (!$services->isEmpty()) {
 
             foreach ($services as $service) {
-                $elements[] = array($service->price);  
+                
+                if($service->type == 1)
+                {
+                 $elements[] = array('price'=>$service->price);  
+                }  
             }
 
             $prices = json_encode($elements);
