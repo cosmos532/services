@@ -37,7 +37,7 @@ Route::middleware(['auth'])->middleware('verified')->group(function () {
 
         Route::post('/booking/select', [App\Http\Controllers\BookingController::class, 'select'])->name('select');
 
-        Route::post('/booking/prices', [App\Http\Controllers\BookingController::class, 'prices'])->name('prices');
+        Route::post('/booking/price', [App\Http\Controllers\BookingController::class, 'price'])->name('price');
 
         Route::get('/booking/{id}/', [App\Http\Controllers\BookingController::class, 'create']);
 

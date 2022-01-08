@@ -18,32 +18,33 @@
                                 <th>{{ __('Time') }}</th>
                                 <th>{{ __('Price') }}</th>
                                 <th>{{ __('Total') }}</th>
+                                <th></th>
                             </tr>
                         </thead>
-                        <tbody>
-                        <tr class="item-row">
+                        <tbody id="rows">
+                        <tr class="item-row" id="row_1">
                             <td class="col-1">
-                                <input class="form-control qty" name="quantity[]" id="quantity[]" value="1" type="text" readonly="readonly">
+                                <input class="form-control qty" name="quantity[]" id="quantity_1" value="1" type="text" readonly="readonly">
                             </td>
                             <td class="col-4">
-                                <select class="form-control" name="service_id[]" id="service_id" onchange='changePrice();'>
-                                    
+                                <select class="form-control" name="service_id[]" id="service_id_1" onchange='changePrice(event);'>
                                 </select>
                             </td>
                             <td class="col-2">
                                 <input
                                     type="text"
-                                    id="datepicker"
+                                    id="datepicker_1"
                                     name="date[]"
                                     class="form-control date"
                                     placeholder="{{ __('Select') }}"
                                     onfocus="(this.type='date')"
                                     onblur="(this.type='text')"
+                                    onchange="validate(1)"
                                 >
-                                <span class="text-danger" id="date-response"></span>
+                                <span class="text-danger" id="date-response_1"></span>
                             </td>
                             <td class="col-2">
-                                <select class="form-control" name="time[]" id="time">
+                                <select class="form-control" name="time[]" id="time_1" onchange="validate(1)">
                                     <option value="" selected>{{ __('Select') }}</option>
                                     <option value="06:00">06:00</option>
                                     <option value="06:30">06:30</option>
@@ -77,21 +78,16 @@
                                 </select>
                             </td>
                             <td class="col-2">
-                                <input class="form-control price" name="price[]" id="price" placeholder="Precio" type="number" value="" readonly="readonly">
+                                <input class="form-control price" name="price[]" id="price_1" step="0.00" placeholder="Precio" type="number" value="" readonly="readonly">
                             </td>
                             <td class="col-1">
                                 <span class="total">0.00</span>
                             </td>
+                            <td></td>
                         </tr>
-
-                        <tr id="hiderow">
-                            <td colspan="6">
-                                <a id="addRow" href="javascript:;" title="Add a row" class="btn btn-primary">Add ítem</a>
-                            </td>
-                        </tr>
-                       
                         </tbody>
                     </table>
+                    <a id="addRow" href="javascript:;" title="Add a row" class="btn btn-primary">Add ítem</a>
                 </div>
             </div>
         </div>
@@ -107,6 +103,7 @@
 </script>
 
 <script>
+    /*
     jQuery(document).ready(function(){
         jQuery().invoice({
             addRow : "#addRow",
@@ -130,4 +127,5 @@
             grand_total_form: "#grand_total_form"
         });
     });
+    */
 </script>

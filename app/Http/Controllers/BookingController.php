@@ -111,23 +111,13 @@ class BookingController extends Controller
         }
     }
 
-    public function prices()
+    public function price(Request $request)
     {
-        $services = Service::all();
-
-        if (!$services->isEmpty()) {
-
-            foreach ($services as $service) {
-                
-                if($service->type == 1)
-                {
-                 $elements[] = array('price'=>$service->price);  
-                }  
-            }
-
-            $prices = json_encode($elements);
+        $id = $request['id'];
+        $price = Service::select('price')->where('id', $id)->first();
+        if ($price) {
+            return $price;
         }
-
-        return $prices;
+        return json_encode(["price" => 0.00]);
     }
 }

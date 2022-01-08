@@ -40,115 +40,189 @@
 
     <script src="{{ asset('js/booking.js') }}"></script>
 
-
     <script>
+		function changePrice(event)
+		{
+			$.ajax({
+				type: "post",
+				url: "{{ route('price') }}",
+				data: {
+					"_token": "{{ csrf_token() }}",
+					"id": event.target.value
+				},
+				success: function(data) {
+					var element = event.target.id
+					var array = element.split("_");
+					console.log(data);
+					$("#price_"+array[2]).val(data.price);
+				},
+				error: function(error) {
+					console.log(error);
+				}
+			});
+		}
+    </script>
+    <script>
+    let datos = '';
+	let existingDates = [];
+	var t = 1;
+	$(document).ready(function() {
+		$.ajax({
+			type: "post",
+			url: "{{ route('select') }}",
+			data: {
+				"_token": "{{ csrf_token() }}"
+			},
+			success: function(data) {
+				datos = $.parseJSON(data);
+				fill(1);
+			},
+			error: function(error) {
+				console.log(error);
+			}
+		});
+	});
 
-      function changePrice()
+	function fill(id)
+	{
+		$('#service_id_'+id).append('<option value = "">Seleccione</option>');
+		for (var i = 0; i < datos.length; i++) {
+			$('#service_id_'+id).append('<option value = \"' + datos[i].value + '\">' + datos[i].description + '</option>');
+		}
+	}
 
-      {
-        var option = $("#service_id :selected").attr("data-price");
-        
-        document.getElementById('price').value = option;
-        
-      }
+	function remove(index)
+	{
+		var date = $('#datepicker_' + index).val();
+		var time = $("#time_" + index).val();
+		var values = date + "_" + time;
+		removeItemFromArray(values);
+		$("#row_" + index).remove();
+		console.log(existingDates);
+	}
+
+	function validate(index)
+	{
+		var date = $('#datepicker_' + index).val();
+		var time = $("#time_" + index).val();
+		if (date !== "" && time !== ""){
+			call_to_controller(date, time, url, index);
+		}
+	}
+
+	function removeItemFromArray(item) {
+    	var i = existingDates.indexOf(item);
+		console.log(i);
+		if ( i !== -1 ) {
+			existingDates.splice(i, 1);
+		}
+	}
+
+	$("#addRow").click(function()
+	{
+		t += 1;
+		var row = `<tr class="item-row" id="row_${t}">
+						<td class="col-1">
+							<input class="form-control qty" name="quantity[]" id="quantity_${t}" value="1" type="text" readonly="readonly">
+						</td>
+						<td class="col-4">
+							<select class="form-control" name="service_id[]" id="service_id_${t}" onchange='changePrice(event);'>
+
+							</select>
+						</td>
+						<td class="col-2">
+							<input
+								type="text"
+								id="datepicker_${t}"
+								name="date[]"
+								class="form-control date"
+								placeholder="{{ __('Select') }}"
+								onfocus="(this.type='date')"
+								onblur="(this.type='text')"
+								onchange="validate(${t})"
+							>
+							<span class="text-danger" id="date-response_${t}"></span>
+						</td>
+						<td class="col-2">
+							<select class="form-control" name="time[]" id="time_${t}" onchange="validate(${t})">
+								<option value="" selected>{{ __('Select') }}</option>
+								<option value="06:00">06:00</option>
+								<option value="06:30">06:30</option>
+								<option value="07:00">07:00</option>
+								<option value="07:30">07:30</option>
+								<option value="08:00">08:00</option>
+								<option value="08:30">08:30</option>
+								<option value="09:00">09:00</option>
+								<option value="09:30">09:30</option>
+								<option value="10:00">10:00</option>
+								<option value="10:30">10:30</option>
+								<option value="11:00">11:00</option>
+								<option value="11:30">11:30</option>
+								<option value="12:00">12:00</option>
+								<option value="12:30">12:30</option>
+								<option value="13:00">13:00</option>
+								<option value="13:30">13:30</option>
+								<option value="14:00">14:00</option>
+								<option value="14:30">14:30</option>
+								<option value="15:00">15:00</option>
+								<option value="15:30">15:30</option>
+								<option value="16:00">16:00</option>
+								<option value="16:30">16:30</option>
+								<option value="17:00">17:00</option>
+								<option value="17:30">17:30</option>
+								<option value="18:00">18:00</option>
+								<option value="18:30">18:30</option>
+								<option value="19:00">19:00</option>
+								<option value="19:30">19:30</option>
+								<option value="200:00">20:00</option>
+							</select>
+						</td>
+						<td class="col-2">
+							<input class="form-control price" name="price[]" id="price_${t}" placeholder="Precio" type="number" value="" readonly="readonly">
+						</td>
+						<td class="col-1">
+							<span class="total" id="subtotal_${t}">0.00</span>
+						</td>
+						<td>
+							<button type="button" onclick="remove(${t})" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i></button>
+						</td>
+					</tr>`;
+		$('#rows').append(row);
+		fill(t);
+	});
     </script>
 
-
     <script>
-
-      let datos = '';
-
-      $(document).ready(function(){
-
-        $.ajax({
-          type: "post",
-          url: "{{ route('select') }}",
-          data: {"_token": "{{ csrf_token() }}"},
-          success: function(data) {
-            datos = $.parseJSON(data);
-            for(var i = 0; i < datos.length; i++) {
-                $('#service_id').append('<option value = \"' + datos[i].value + '\" data-price = \"' + datos[i].price + '\">' + datos[i].description + '</option>');
-            }
-          },
-          error: function (error) { 
-            console.log(error); 
-          }
-                                   
-        });  
-        
-      });                                  
-    </script>
-
-    <script>
-      $("#addRow").click(function(){
-
-        $.ajax({
-          type: "post",
-          url: "{{ route('select') }}",
-          data: {"_token": "{{ csrf_token() }}"},
-          success: function(data) {
-            datos = $.parseJSON(data);
-            for(var i = 0; i < datos.length; i++) {
-                $('#service_id').append('<option value = \"' + datos[i].value + '\" data-price = \"' + datos[i].price + '\">' + datos[i].description + '</option>');
-            }
-          },
-          error: function (error) { 
-            console.log(error); 
-          }
-                                   
-        }); 
-        
-      });                                  
-    </script>
-
-    <script>
-                   
       let date;
       let time;
       let url = "{{route('check.date')}}";
 
-      $('#datepicker').change(function() {
-          date = $(this).val();
-          if ( $("#time").val()!=="" && $("#datepicker").val() !== "")
-          {
-            call_to_controller(date, time, url);
-          }
-      });
-
-      $('#time').change(function() {
-          time = $(this).val();
-          if ( $("#time").val()!=="" && $("#datepicker").val() !== "")
-          {
-            call_to_controller(date, time, url);
-          }
-      });
-      
-
-      function call_to_controller(date, time, url) {
+    function call_to_controller(date, time, url, index) {
 
         $.ajax({
-          type: "post",
-          url: url,
-          data: {"_token": "{{ csrf_token() }}",
-                  date: date, time: time, url: url 
+        	type: "post",
+          	url: url,
+          	data: {"_token": "{{ csrf_token() }}",
+                	date: date, time: time, url: url
                 },
-          success: function(data) {
-            if (data) 
-            {
-              $("#date-response").html('La fecha está ocupada');
-            } 
-            else 
-            {
-              $("#date-response").html('');
-            }
-          },
-          error: function (error) { 
-            console.log(error); 
-          }
-                                   
-        });            
-      };                         
-
+          	success: function(data) {
+				if (data){
+					$("#date-response_" + index).html('La fecha está ocupada');
+				}else{
+					var values = date + '_' + time;
+					if(existingDates.includes(values)){
+						$("#date-response_" + index).html('La fecha está ocupada');
+					}else{
+						$("#date-response_" + index).html('');
+						existingDates.push(values);
+					}
+				}
+        	},
+          	error: function (error) {
+            	console.log(error);
+          	}
+        });
+    };
     </script>
 
     @stack('scripts')
