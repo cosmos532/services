@@ -28,11 +28,6 @@
                             </td>
                             <td class="col-4">
                                 <select class="form-control" name="service_id[]" id="service_id_1" onchange='changePrice(event);'>
-                                    @if (isset($selected_service))
-                                        @if($selected_service->id != AQUI EL JS)
-                                            <option value="{{ $selected_service->id }}" selected>{{ $selected_service->description }}</option>
-                                        @endif
-                                    @endif
                                 </select>
                             </td>
                             <td class="col-2">

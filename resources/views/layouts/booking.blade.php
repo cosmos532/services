@@ -87,7 +87,13 @@
 	{
 		$('#service_id_'+id).append('<option value = "">Seleccione</option>');
 		for (var i = 0; i < datos.length; i++) {
-			$('#service_id_'+id).append('<option value = \"' + datos[i].value + '\">' + datos[i].description + '</option>');
+			<?php if(isset($selected_service)){ ?>
+				var service_id = '<?php echo $selected_service->id; ?>';
+			<?php }else{ ?>
+				var service_id = '';
+            <?php } ?>
+			var selected = (datos[i].value == service_id && id == 1) ? 'selected' : '';
+			$('#service_id_'+id).append('<option value = \"' + datos[i].value + '\"' + selected +  '>' + datos[i].description + '</option>');
 		}
 	}
 
