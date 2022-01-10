@@ -112,6 +112,9 @@
 		var date = $('#datepicker_' + index).val();
 		var time = $("#time_" + index).val();
 		if (date !== "" && time !== ""){
+			if(existingDates[index]){
+				existingDates.splice(index, 1);
+			}
 			call_to_controller(date, time, url, index);
 		}
 	}
@@ -220,9 +223,10 @@
 						$("#date-response_" + index).html('La fecha está ocupada');
 					}else{
 						$("#date-response_" + index).html('');
-						existingDates.push(values);
+						existingDates[index] = values;
 					}
 				}
+				console.log(existingDates);
         	},
           	error: function (error) {
             	console.log(error);
